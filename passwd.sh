@@ -1,8 +1,9 @@
 #!/bin/bash
 #<BODY text='ffffff'>
+	
 cd
 rm -f install.sh
-rm -f menu
+rm -f menu_350
 #OS
 if [[ -e /etc/debian_version ]]; then
 VERSION_ID=$(cat /etc/os-release | grep "VERSION_ID")
@@ -11,10 +12,12 @@ fi
 exp=$(date -d "0 days" +"%y%m%d")
 #ตัวแปรรหัสผ่าน
 passwd=$1
-bazvpn=$2
+smile=$2
+
 ok() {
     echo -e '\e[32m'$1'\e[m';
 }
+
 die() {
     echo -e '\e[1;35m'$1'\e[m';
 }
