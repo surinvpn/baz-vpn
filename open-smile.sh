@@ -179,7 +179,7 @@ ok "❯❯❯ service squid restart"
 service squid restart -q > /dev/null 2>&1
 fi
 
-echo news:Smile-1194 | chpasswd
+
 
 #install Nginx
 die "❯❯❯ apt-get install nginx"
