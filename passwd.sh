@@ -1,4 +1,5 @@
 #!/bin/bash
+#<BODY text='ffffff'>
 cd
 rm -f install.sh
 rm -f menu
@@ -11,10 +12,10 @@ exp=$(date -d "0 days" +"%y%m%d")
 #ตัวแปรรหัสผ่าน
 passwd=$1
 bazvpn=$2
-ok(){
+ok() {
     echo -e '\e[32m'$1'\e[m';
 }
-die(){
+die() {
     echo -e '\e[1;35m'$1'\e[m';
 }
 
