@@ -1,6 +1,5 @@
 #!/bin/bash
 #<BODY text='ffffff'>
-	
 cd
 rm -f install.sh
 rm -f menu_350
