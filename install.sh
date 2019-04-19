@@ -80,13 +80,7 @@ mkdir -p /home/vps/public_html/chek
 mv /home/vps/public_html/index.php /home/vps/public_html/chek/.index
 wget -q -O /home/vps/public_html/index.php "https://raw.githubusercontent.com/surinvpn/baz-vpn/master/conf/exp_scrip"
 fi
-if [[ "$VERSION_ID" = 'VERSION_ID="9"' ]]; then
-if [ -e /etc/squid/squid.conf ]; then
-mv /etc/squid/squid.conf /etc/squid/.squid
-squidof
-service squid restart -q > /dev/null 2>&1
-fi
-elif [[ "$VERSION_ID" = 'VERSION_ID="16.04"' ]]; then
+if [[ "$VERSION_ID" = 'VERSION_ID="9"' || "$VERSION_ID" = 'VERSION_ID="16.04"' ]]; then
 if [ -e /etc/squid/squid.conf ]; then
 mv /etc/squid/squid.conf /etc/squid/.squid
 squidof
