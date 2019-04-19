@@ -55,11 +55,6 @@ apt-get update -q > /dev/null 2>&1
 die "❯❯❯ apt-get install openvpn curl openssl"
 apt-get install -qy openvpn curl > /dev/null 2>&1
 
-# IP Address
-SERVER_IP=$(wget -qO- ipv4.smile-vpn.net);
-if [[ "$SERVER_IP" = "" ]]; then
-    SERVER_IP=`ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0' | grep -v '192.168'`;
-fi
 
 die "❯❯❯ Generating CA Config"
 cd /
@@ -72,7 +67,6 @@ auth-user-pass
 client
 dev tun
 proto tcp
-port 1194
 connect-retry 1
 connect-timeout 120
 
@@ -92,15 +86,9 @@ verb 2
 cipher none
 comp-lzo
 script-security 3
-remote $SERVER_IP
+remote $SERVER_IP 1194
 http-proxy $SERVER_IP 8080
 
-<key>
-$(cat /etc/openvpn/client-key.pem)
-</key>
-<cert>
-$(cat /etc/openvpn/client-cert.pem)
-</cert>
 <ca>
 $(cat /etc/openvpn/ca.pem)
 </ca>
@@ -110,7 +98,7 @@ cat > /etc/openvpn/dtac.ovpn << SMILE
 client
 dev tun
 proto tcp
-port 1194
+port 4488
 connect-retry 1
 connect-timeout 120
 
@@ -130,7 +118,7 @@ verb 3
 cipher none
 comp-lzo
 script-security 3
-remote $SERVER_IP
+remote $SERVER_IP 1194
 http-proxy $SERVER_IP 8080
 SMILE
 cp /etc/openvpn/dtac.ovpn /etc/openvpn/true.ovpn 
@@ -139,42 +127,8 @@ cp /etc/openvpn/dtac.ovpn /etc/openvpn/true.ovpn
 ok "❯❯❯ service openvpn restart"
 service openvpn restart > /dev/null 2>&1
 
-if [[ "$VERSION_ID" = 'VERSION_ID="7"' || "$VERSION_ID" = 'VERSION_ID="8"' || "$VERSION_ID" = 'VERSION_ID="14.04"' ]]; then
-#install squid3
-die "❯❯❯ apt-get install squid3"
-apt-get install -qy squid3 > /dev/null 2>&1
-cp /etc/squid3/squid.conf /etc/squid3/squid.conf.orig
-echo "http_port 8080
-acl localhost src 127.0.0.1/32 ::1
-acl to_localhost dst 127.0.0.0/8 0.0.0.0/32 ::1
-acl localnet src 10.0.0.0/8
-acl localnet src 172.16.0.0/12
-acl localnet src 192.168.0.0/16
-acl SSL_ports port 443
-acl Safe_ports port 80
-acl Safe_ports port 21
-acl Safe_ports port 443
-acl Safe_ports port 70
-acl Safe_ports port 210
-acl Safe_ports port 1025-65535
-acl Safe_ports port 280
-acl Safe_ports port 488
-acl Safe_ports port 591
-acl Safe_ports port 777
-acl CONNECT method CONNECT
-acl SSH dst $SERVER_IP-$SERVER_IP/255.255.255.255                 
-http_access allow SSH
-http_access allow localnet
-http_access allow localhost
-http_access deny all
-refresh_pattern ^ftp:           1440    20%     10080
-refresh_pattern ^gopher:        1440    0%      1440
-refresh_pattern -i (/cgi-bin/|\?) 0     0%      0
-refresh_pattern .               0       20%     4320" > /etc/squid3/squid.conf
-ok "❯❯❯ service squid3 restart"
-service squid3 restart -q > /dev/null 2>&1
 
-elif [[ "$VERSION_ID" = 'VERSION_ID="16.04"' || "$VERSION_ID" = 'VERSION_ID="9"' ]]; then
+if [[ "$VERSION_ID" = 'VERSION_ID="16.04"' || "$VERSION_ID" = 'VERSION_ID="9"' ]]; then
 #install squid3
 die "❯❯❯ apt-get install squid"
 apt-get install -qy squid > /dev/null 2>&1
@@ -229,15 +183,7 @@ ok "❯❯❯ service nginx restart"
 service nginx restart > /dev/null 2>&1
 
 #install php-fpm
-if [[ "$VERSION_ID" = 'VERSION_ID="7"' || "$VERSION_ID" = 'VERSION_ID="8"' || "$VERSION_ID" = 'VERSION_ID="14.04"' ]]; then
-#debian8
-die "❯❯❯ apt-get install php"
-apt-get install -qy php5-fpm > /dev/null 2>&1
-sed -i 's/listen = \/var\/run\/php5-fpm.sock/listen = 127.0.0.1:9000/g' /etc/php5/fpm/pool.d/www.conf
-apt-get install -qy php5-curl > /dev/null 2>&1
-ok "❯❯❯ service php restart"
-service php5-fpm restart -q > /dev/null 2>&1
-elif [[ "$VERSION_ID" = 'VERSION_ID="9"' || "$VERSION_ID" = 'VERSION_ID="16.04"' ]]; then
+if [[ "$VERSION_ID" = 'VERSION_ID="9"' || "$VERSION_ID" = 'VERSION_ID="16.04"' ]]; then
 #debian9 Ubuntu16.4
 die "❯❯❯ apt-get install php"
 apt-get install -qy php7.0-fpm > /dev/null 2>&1
