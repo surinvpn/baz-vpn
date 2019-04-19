@@ -12,7 +12,7 @@ exp=$(date -d "0 days" +"%y%m%d")
 #ตัวแปรรหัสผ่าน
 passwd=$1
 smile=$2
-
+# Functions
 ok() {
     echo -e '\e[32m'$1'\e[m';
 }
@@ -20,7 +20,13 @@ ok() {
 die() {
     echo -e '\e[1;35m'$1'\e[m';
 }
+red() {
+    echo -e '\e[1;31m'$1'\e[m';
+}
 
+des() {
+    echo -e '\e[1;31m'$1'\e[m'; exit 1;
+}
 if [ -d /home/vps/public_html/install ]; then
 egrep "^NoInstall" /home/vps/public_html/application/config/database.php >/dev/null
 if [ $? -eq 0 ]; then
