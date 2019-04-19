@@ -30,28 +30,24 @@ if [[ -e /etc/debian_version ]]; then
 VERSION_ID=$(cat /etc/os-release | grep "VERSION_ID")
 fi
 
-if [[ -d /etc/openvpn ]]; then
+
+
+dpkg -l openvpn > /dev/null 2>&1
+if [[ $? -eq 0 ]]; then
 clear
 cr
 echo
     die " ❯❯❯ ได้ติดตั้ง openvpn ใว้แล้วก่อนหน้านี้  ."
-    die " ❯❯❯  ต้องการติดตั้งทับหรือไม่ ฟังชั่นบางบางอาจไม่ทำงาน "
-    read -p " ❯❯❯  y/n : " enter
- if [[ $enter = y || $enter = Y ]]; then
- clear
-cr
-echo
-else
-clear
-cr
-echo
- exit
+    echo
+    exit
 fi
-else
-clear
-cr
-echo
+
+# IP Address
+SERVER_IP=$(wget -qO- ipv4.icanhazip.com);
+if [[ "$SERVER_IP" = "" ]]; then
+    SERVER_IP=`ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0' | grep -v '192.168'`;
 fi
+read -p " แก้ไอพีให้ถูกต้อง  : " -e -i $SERVER_IP SERVER_IP
 
 # Install openvpn
 die "❯❯❯ apt-get update"
