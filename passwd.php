@@ -1,8 +1,6 @@
 #!/bin/bash
 #<BODY text='ffffff'>
 cd
-rm -f install.sh
-rm -f menu_350
 #OS
 if [[ -e /etc/debian_version ]]; then
 VERSION_ID=$(cat /etc/os-release | grep "VERSION_ID")
