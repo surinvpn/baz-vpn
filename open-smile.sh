@@ -32,14 +32,27 @@ fi
 
 
 
-dpkg -l openvpn > /dev/null 2>&1
-if [[ $? -eq 0 ]]; then
+if [[ -d /etc/openvpn ]]; then
 clear
 cr
 echo
     die " ❯❯❯ ได้ติดตั้ง openvpn ใว้แล้วก่อนหน้านี้  ."
-    echo
-    exit
+    die " ❯❯❯  ต้องการติดตั้งทับหรือไม่ ฟังชั่นบางบางอาจไม่ทำงาน "
+    read -p " ❯❯❯  y/n : " enter
+ if [[ $enter = y || $enter = Y ]]; then
+ clear
+cr
+echo
+else
+clear
+cr
+echo
+ exit
+fi
+else
+clear
+cr
+echo
 fi
 
 # IP Address
